@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import questions from '../questions.js';
 import quizComplete from '../assets/quiz-complete.png';
 import QuestionTimer from './QuestionTimer.jsx';
+import Answers from './Answers.jsx';
 
 
 export default function Quiz() {
@@ -38,10 +39,6 @@ export default function Quiz() {
         )
     }
 
-    const shuffleAnswers = [...questions[questionIndex].answers];
-    shuffleAnswers.sort(() => Math.random() - 0.5);
-
-
     return (
         <div id="quiz">
             <QuestionTimer
@@ -50,28 +47,11 @@ export default function Quiz() {
                 onTimeout={handleSkipAnswer} />
             <div id="question">
                 <h2>{questions[questionIndex].text}</h2>
-                <ul id='answers'>
-                    {shuffleAnswers.map(answer => {
-                        const isSelected = answeredQuestion[answeredQuestion.length - 1] === answer;
-                        let cssClass = '';
-
-                        if (answerState === 'answered' && isSelected) {
-                            cssClass = 'selected'
-                        }
-
-                        if ((answerState === 'correct' || answerState === 'wrong') && isSelected) {
-                            cssClass = answerState;
-                        }
-
-                        return (
-                            <li key={answer} className='answer'>
-                                <button onClick={() => handleSelectAnswer(answer)} className={cssClass}>
-                                    {answer}
-                                </button>
-                            </li>
-                        )
-                    })}
-                </ul>
+                <Answers
+                    key={questionIndex}
+                    answers={questions[questionIndex].answers} selectedAnswer={answeredQuestion[answeredQuestion.length - 1]}
+                    answerState={answerState}
+                    onSelect={handleSelectAnswer} />
             </div>
         </div>
     )
